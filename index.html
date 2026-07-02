@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liceria Coffee — Small-Batch Roastery</title>
+  <meta name="description" content="Single-origin coffee from nine family farms, roasted in small batches every Thursday and shipped within 48 hours of the roast.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..800;1,9..144,200..800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/intro.css">
+</head>
+<body>
+
+  <!-- BACKGROUND 3D SPACE -->
+  <canvas id="bg3dCanvas"></canvas>
+
+  <!-- ═══════════ LICERIA CINEMATIC INTRO — "FROM THE ROAST" ═══════════ -->
+  <div class="lc-intro" id="liceria-intro" role="status" aria-label="Loading Liceria Coffee">
+    <canvas class="lc-canvas" id="lcCanvas" aria-hidden="true"></canvas>
+    <div class="lc-swirl2d" aria-hidden="true"></div>
+    <div class="lc-veil" aria-hidden="true"></div>
+    <div class="lc-leak" aria-hidden="true"></div>
+    <div class="lc-vignette" aria-hidden="true"></div>
+    <div class="lc-grain" aria-hidden="true"></div>
+
+    <div class="lc-brand" aria-hidden="true">
+      <span class="lc-brand-eyebrow">Single origin &middot; Small batch</span>
+      <span class="lc-brand-mask"><span class="lc-brand-name">Liceria</span></span>
+      <span class="lc-brand-rule"></span>
+      <span class="lc-brand-sub">Coffee</span>
+    </div>
+
+    <div class="lc-bar lc-bar-top">
+      <div class="lc-bar-inner">
+        <span class="lc-chip">Liceria<em>&thinsp;&mdash;&thinsp;Roastery</em></span>
+        <button class="lc-skip" id="lcSkip" aria-label="Skip preloader animation" type="button">Skip intro</button>
+      </div>
+    </div>
+
+    <div class="lc-bar lc-bar-bottom">
+      <span class="lc-progressline" aria-hidden="true"><i></i></span>
+      <div class="lc-bar-inner">
+        <div class="lc-counter" aria-hidden="true">
+          <span class="lc-digits">
+            <span class="lc-col lc-col-h"><span class="lc-strip"><i>1</i></span></span>
+            <span class="lc-col"><span class="lc-strip" data-lc-strip></span></span>
+            <span class="lc-col"><span class="lc-strip" data-lc-strip></span></span>
+          </span>
+          <span class="lc-pct">%</span>
+        </div>
+        <div class="lc-stage" aria-hidden="true">
+          <span class="lc-stage-mask"><span class="lc-stage-word" data-lc-stage>Roasting</span></span>
+          <span class="lc-stage-note" data-lc-note>first crack &middot; 196&deg;C</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <svg class="progress-ring" width="50" height="50">
+    <circle class="progress-ring__circle" stroke="#8C5A2B" stroke-width="2" fill="transparent" r="20" cx="25" cy="25"/>
+  </svg>
+
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor"></div>
+  <div class="cursor-follower"><span class="cursor-text"></span></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo hover-target">
+        <span class="logo-text">Liceria</span>
+        <span class="logo-sub">COFFEE</span>
+      </a>
+      
+      <div class="nav-links" id="navLinks">
+        <a href="#home" class="active hover-target">Home</a>
+        <a href="#shop" class="hover-target">Shop</a>
+        <a href="#about" class="hover-target">Our Story</a>
+        <a href="#ritual" class="hover-target">The Ritual</a>
+        <a href="#contact" class="hover-target">Contact</a>
+      </div>
+
+      <div class="nav-icons">
+        <button type="button" aria-label="Search" class="hover-target magnetic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button type="button" aria-label="User profile" class="hover-target magnetic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </button>
+        <button type="button" aria-label="Cart" class="cart-btn hover-target magnetic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="cart-badge">0</span>
+        </button>
+        <a href="#shop" class="btn-shop-now hover-target magnetic-btn">Shop Now</a>
+      </div>
+
+      <div class="nav-mobile-btn"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg-leaves bg-leaf-left parallax-bg" data-speed="0.05"></div>
+    <div class="hero-bg-leaves bg-leaf-right parallax-bg" data-speed="-0.05"></div>
+    
+    <div class="container hero-grid">
+      <!-- Left Content -->
+      <div class="hero-content">
+        <div class="overflow-hidden"><span class="tag hero-anim">Single origin &middot; Small batch</span></div>
+        <h1 class="hero-title">
+          <div class="overflow-hidden"><span class="line-block split-text-target">The morning,</span></div>
+          <div class="overflow-hidden"><span class="line-block line-italic split-text-target">taken seriously.</span></div>
+        </h1>
+        <div class="overflow-hidden"><p class="hero-anim">Nine family farms, one small roastery. Every lot is roasted on Thursday and shipped within 48 hours of the roast.</p></div>
+
+        <div class="hero-actions overflow-hidden">
+          <div class="hero-anim flex-row-gap">
+            <a href="#shop" class="btn-solid-brown hover-target magnetic-btn">Shop the roast</a>
+            <a href="#about" class="btn-outline hover-target magnetic-btn">Our story</a>
+          </div>
+        </div>
+        
+        <div class="hero-social-proof overflow-hidden">
+          <div class="hero-anim flex-row-gap-20">
+            <div class="avatars">
+              <img src="assets/images/avatar-1.png" alt="Avatar">
+              <img src="assets/images/avatar-2.png" alt="Avatar">
+              <img src="assets/images/avatar-3.png" alt="Avatar">
+              <img src="assets/images/avatar-4.png" alt="Avatar">
+              <div class="avatar-plus">+</div>
+            </div>
+            <p class="trust-text">Trusted by over<br><strong>8,000+ happy customers</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Image -->
+      <div class="hero-image-wrapper">
+        <div class="hero-circle-text">
+           <svg viewBox="0 0 100 100" width="100%" height="100%">
+             <path id="circlePath" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
+             <text font-family="Poppins" font-size="6.5" font-weight="600" letter-spacing="1" fill="#C2A895">
+               <textPath href="#circlePath" startOffset="0%">FRESHLY ROASTED • PREMIUM BLENDS •</textPath>
+             </text>
+           </svg>
+        </div>
+        
+        <!-- Floating Beans -->
+        <div class="floating-bean bean-1 parallax-mouse" data-speed="20" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-2 parallax-mouse" data-speed="-15" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-3 parallax-mouse" data-speed="10" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-4 parallax-mouse" data-speed="-25" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+
+        <img src="assets/images/hero-coffee-cup.png" alt="Coffee Cup" class="main-cup parallax-mouse" data-speed="-5">
+        
+        <div class="hero-decoration-text">
+           <svg class="hand-arrow draw-anim" viewBox="0 0 100 100"><path class="path-draw" d="M10,80 Q30,20 80,40" fill="none" stroke="#6b4c3a" stroke-width="2" stroke-linecap="round"/><path class="path-draw" d="M70,30 L80,40 L70,50" fill="none" stroke="#6b4c3a" stroke-width="2" stroke-linecap="round"/></svg>
+           <span class="script-accent hero-anim-fade">still warm<br>from the roaster</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Stats (Moved outside grid for exact positioning) -->
+    <div class="container hero-stats-container">
+      <div class="hero-stats hero-anim-stats">
+        <div class="stat-item">
+          <!-- Custom Steaming Cup SVG -->
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+              <path d="M6 2v2"></path>
+              <path d="M10 2v2"></path>
+              <path d="M14 2v2"></path>
+            </svg>
+          </div>
+          <div class="stat-number" data-target="1000" data-prefix="">1,000+</div>
+          <div class="stat-label">Cups Served Daily</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <!-- Custom Star Badge SVG -->
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="stat-number" data-target="7400" data-prefix="">7,400+</div>
+          <div class="stat-label">5 Star Ratings</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <!-- Custom People SVG -->
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="stat-number" data-target="2000" data-prefix="">2,000+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- KINETIC MARQUEE -->
+  <section class="marquee-section">
+    <div class="marquee-container">
+      <div class="marquee-content">
+        <span class="marquee-text">SINGLE ORIGIN &#8226; SMALL BATCH &#8226; ROASTED THURSDAYS &#8226; </span>
+        <span class="marquee-text">SINGLE ORIGIN &#8226; SMALL BATCH &#8226; ROASTED THURSDAYS &#8226; </span>
+        <span class="marquee-text">SINGLE ORIGIN &#8226; SMALL BATCH &#8226; ROASTED THURSDAYS &#8226; </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BESTSELLERS -->
+  <section class="products" id="shop">
+    <div class="container section-reveal">
+      <div class="section-header text-center">
+        <span class="tag">Tasting</span>
+        <span class="tag-note">dark chocolate &middot; fig &middot; molasses</span>
+        <h2 class="section-title split-text-target">The bestsellers</h2>
+        <p class="section-subtitle">Four lots that never leave the roster.</p>
+      </div>
+
+      <div class="product-grid">
+        <!-- Item 1 -->
+        <div class="product-card card-reveal hover-target">
+          <div class="product-img-wrapper">
+            <img src="assets/images/italian-coffee.png" alt="Italian Roast">
+          </div>
+          <div class="product-info">
+            <h3>Italian Roast</h3>
+            <p class="roast-type">Dark Roast</p>
+            
+            <div class="product-specs">
+              <div class="product-spec-row">
+                <span class="product-spec-label">Origin</span>
+                <span class="product-spec-val">Guatemala</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Elevation</span>
+                <span class="product-spec-val">1,600m</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Notes</span>
+                <span class="product-spec-val">Cocoa, Molasses</span>
+              </div>
+            </div>
+
+            <div class="product-bottom">
+              <span class="price">₹549</span>
+              <div class="product-actions">
+                <button class="btn-cart hover-target magnetic" aria-label="Add to cart" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h0m11 0h0M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></button>
+                <button class="btn-heart hover-target magnetic" aria-label="Add to wishlist" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="product-card card-reveal hover-target">
+          <div class="product-img-wrapper">
+            <img src="assets/images/viennese-coffee.png" alt="Viennese Blend">
+          </div>
+          <div class="product-info">
+            <h3>Viennese Blend</h3>
+            <p class="roast-type">Medium Roast</p>
+
+            <div class="product-specs">
+              <div class="product-spec-row">
+                <span class="product-spec-label">Origin</span>
+                <span class="product-spec-val">Ethiopia</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Elevation</span>
+                <span class="product-spec-val">1,900m</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Notes</span>
+                <span class="product-spec-val">Jasmine, Peach</span>
+              </div>
+            </div>
+
+            <div class="product-bottom">
+              <span class="price">₹599</span>
+              <div class="product-actions">
+                <button class="btn-cart hover-target magnetic" aria-label="Add to cart" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h0m11 0h0M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></button>
+                <button class="btn-heart hover-target magnetic" aria-label="Add to wishlist" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="product-card card-reveal hover-target">
+          <div class="product-img-wrapper">
+            <img src="assets/images/new-orleans-coffee.png" alt="New Orleans Roast">
+          </div>
+          <div class="product-info">
+            <h3>New Orleans Roast</h3>
+            <p class="roast-type">Medium Dark Roast</p>
+
+            <div class="product-specs">
+              <div class="product-spec-row">
+                <span class="product-spec-label">Origin</span>
+                <span class="product-spec-val">Mexico</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Elevation</span>
+                <span class="product-spec-val">1,450m</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Notes</span>
+                <span class="product-spec-val">Pecan, Chicory</span>
+              </div>
+            </div>
+
+            <div class="product-bottom">
+              <span class="price">₹599</span>
+              <div class="product-actions">
+                <button class="btn-cart hover-target magnetic" aria-label="Add to cart" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h0m11 0h0M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></button>
+                <button class="btn-heart hover-target magnetic" aria-label="Add to wishlist" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="product-card card-reveal hover-target">
+          <div class="product-img-wrapper">
+            <img src="assets/images/moroccan-coffee.png" alt="Moroccan Blend">
+          </div>
+          <div class="product-info">
+            <h3>Moroccan Blend</h3>
+            <p class="roast-type">Dark Roast</p>
+
+            <div class="product-specs">
+              <div class="product-spec-row">
+                <span class="product-spec-label">Origin</span>
+                <span class="product-spec-val">Costa Rica</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Elevation</span>
+                <span class="product-spec-val">1,750m</span>
+              </div>
+              <div class="product-spec-row">
+                <span class="product-spec-label">Notes</span>
+                <span class="product-spec-val">Fig, Caramel</span>
+              </div>
+            </div>
+
+            <div class="product-bottom">
+              <span class="price">₹549</span>
+              <div class="product-actions">
+                <button class="btn-cart hover-target magnetic" aria-label="Add to cart" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21h0m11 0h0M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></button>
+                <button class="btn-heart hover-target magnetic" aria-label="Add to wishlist" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="view-all-wrapper text-center">
+         <a href="#shop" class="btn-outline hover-target magnetic-btn">View All Products &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER BEST COFFEE -->
+  <section class="discover" id="about">
+    <div class="hero-bg-leaves bg-leaf-left" style="top: 30%;"></div>
+    
+    <div class="container discover-grid section-reveal">
+      <div class="discover-content">
+        <span class="tag">Origin</span>
+        <span class="tag-note">1,400&ndash;2,100m &middot; volcanic soil</span>
+        <h2 class="section-title split-text-target">Grown far, roasted near</h2>
+        <p class="section-subtitle">We buy directly from nine family farms across three continents, then roast in small batches so every bag ships at peak flavor.</p>
+        
+        <div class="features-list">
+          <div class="feature-item stagger-item">
+            <!-- Custom Bean SVG -->
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path>
+                <path d="M14 6c-3 2-6 7-6 10"></path>
+              </svg>
+            </div>
+            <div>
+              <h4>Finest Quality Beans</h4>
+              <p>Sourced from top coffee-growing regions.</p>
+            </div>
+          </div>
+          <div class="feature-item stagger-item">
+            <!-- Custom Bag SVG -->
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                <path d="M3 6h18"></path>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+            </div>
+            <div>
+              <h4>Expertly Roasted</h4>
+              <p>Roasted in small batches to lock in flavor.</p>
+            </div>
+          </div>
+          <div class="feature-item stagger-item">
+            <!-- Custom Plant SVG -->
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#B87B44" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+              </svg>
+            </div>
+            <div>
+              <h4>Sustainable Practices</h4>
+              <p>Good for you and better for the planet.</p>
+            </div>
+          </div>
+        </div>
+        
+        <a href="#shop" class="btn-solid-brown hover-target magnetic-btn mt-4">Taste the origin</a>
+      </div>
+      
+      <div class="discover-image parallax-img">
+        <div class="green-circle"></div>
+        <img src="assets/images/coffee-cups-stack.png" alt="Stacked Coffee Cups">
+        <div class="leaves-bg"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COFFEE MADE EASY (BREW RITUAL) -->
+  <section class="made-easy section-reveal" id="ritual">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="tag">Ritual</span>
+        <span class="tag-note">93&deg; water &middot; four minutes</span>
+        <h2 class="section-title split-text-target">The ritual, made easy</h2>
+      </div>
+
+      <div class="stepper-layout">
+        <!-- Left Visual Panel -->
+        <div class="stepper-visuals hover-target">
+          <img src="assets/images/coffee-easy-cup.png" alt="Fine Grind" class="stepper-illust active" data-step="1">
+          <img src="assets/images/italian-coffee.png" alt="Slow Bloom" class="stepper-illust" data-step="2">
+          <img src="assets/images/newsletter-latte.png" alt="Extraction" class="stepper-illust" data-step="3">
+          <img src="assets/images/hero-coffee-cup.png" alt="The First Pour" class="stepper-illust" data-step="4">
+        </div>
+
+        <!-- Right Step Controls -->
+        <div class="stepper-steps">
+          <button class="stepper-step active playing hover-target" aria-label="Step 1: Fine Grind" type="button" data-step="1">
+            <span class="step-num">01</span>
+            <div class="step-details">
+              <h4>Fine Grind</h4>
+              <p>Burr set fine (400 microns) for optimal extraction surface area.</p>
+              <div class="step-progress-bar"><i></i></div>
+            </div>
+          </button>
+          <button class="stepper-step hover-target" aria-label="Step 2: Slow Bloom" type="button" data-step="2">
+            <span class="step-num">02</span>
+            <div class="step-details">
+              <h4>Slow Bloom</h4>
+              <p>Pour 50g of 93&deg;C water. Let the coffee gas and rise for 30 seconds.</p>
+              <div class="step-progress-bar"><i></i></div>
+            </div>
+          </button>
+          <button class="stepper-step hover-target" aria-label="Step 3: Extraction" type="button" data-step="3">
+            <span class="step-num">03</span>
+            <div class="step-details">
+              <h4>Extraction</h4>
+              <p>Pour in slow concentric circles to keep the coffee bed evenly saturated.</p>
+              <div class="step-progress-bar"><i></i></div>
+            </div>
+          </button>
+          <button class="stepper-step hover-target" aria-label="Step 4: The First Pour" type="button" data-step="4">
+            <span class="step-num">04</span>
+            <div class="step-details">
+              <h4>The First Pour</h4>
+              <p>Pour into a warmed ceramic cup. Sip slowly and experience the crema.</p>
+              <div class="step-progress-bar"><i></i></div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS (VOICES) -->
+  <section class="testimonials section-reveal">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="tag">Voices</span>
+        <span class="tag-note">8,000 customers &middot; and counting</span>
+        <h2 class="section-title split-text-target">What the regulars say</h2>
+        <p class="section-subtitle">Notes from people who order twice.</p>
+      </div>
+
+      <div class="testi-deck">
+        <!-- Card 1 -->
+        <div class="testi-card hover-target" data-index="0">
+          <div class="testi-avatar-wrapper">
+             <img src="assets/images/avatar-1.png" alt="Daniel Lewis">
+          </div>
+          <div class="quote-icon">"</div>
+          <p class="testi-text">As a coffee lover, I've tried countless brands, but Liceria stands out. The rich aroma, smooth taste, and ethical sourcing make every cup feel special.</p>
+          <div class="testi-author">
+            <div>
+              <h4>Daniel Lewis</h4>
+              <p>Product Designer</p>
+            </div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="testi-card hover-target" data-index="1">
+          <div class="testi-avatar-wrapper">
+             <img src="assets/images/avatar-2.png" alt="Sarah Wilson">
+          </div>
+          <div class="quote-icon">"</div>
+          <p class="testi-text">I love how Liceria delivers consistent quality with every order. The eco-friendly packaging and amazing flavors make my morning coffee ritual perfect.</p>
+          <div class="testi-author">
+            <div>
+              <h4>Sarah Wilson</h4>
+              <p>Marketing Manager</p>
+            </div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="testi-card hover-target" data-index="2">
+          <div class="testi-avatar-wrapper">
+             <img src="assets/images/avatar-3.png" alt="Marcus Thompson">
+          </div>
+          <div class="quote-icon">"</div>
+          <p class="testi-text">Every bag smells incredible when opened. Sourcing directly from family farms is clear in the taste. Liceria makes my mornings a genuine pleasure.</p>
+          <div class="testi-author">
+            <div>
+              <h4>Marcus Thompson</h4>
+              <p>Creative Director</p>
+            </div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testi Deck Controls -->
+      <div class="testi-deck-controls">
+        <button class="testi-deck-btn hover-target" id="prevTesti" aria-label="Previous testimonial" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <button class="testi-deck-btn hover-target" id="nextTesti" aria-label="Next testimonial" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter section-reveal" id="blog">
+    <div class="container">
+      <div class="news-banner parallax-img">
+        <div class="news-left">
+           <img src="assets/images/newsletter-latte.png" alt="Latte Art" class="spin-slow">
+        </div>
+        <div class="news-center">
+          <h2>The first pour is on us</h2>
+          <p>Subscribe for 25% off your first order, roast-day reminders, and first access to new lots before they sell out.</p>
+          <form class="news-form">
+            <div class="input-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            </div>
+            <button type="submit" class="btn-solid-brown hover-target magnetic-btn" aria-label="Subscribe to newsletter">Subscribe</button>
+          </form>
+        </div>
+        <div class="news-right">
+           <img src="assets/images/discover-coffee-bag.png" alt="Coffee Beans">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="foot-brand">
+          <a href="#" class="nav-logo foot-logo hover-target">
+            <span class="logo-text">Liceria</span>
+            <span class="logo-sub">COFFEE</span>
+          </a>
+          <p>Crafting premium coffee experiences with ethically sourced beans and sustainable practices.</p>
+          <div class="socials"><a href="#" class="hover-target magnetic" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+            <a href="#" class="hover-target magnetic" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+            <a href="#" class="hover-target magnetic" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+            <a href="#" class="hover-target magnetic" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a></div>
+        </div>
+        
+        <div class="foot-col">
+          <h4>Shop</h4>
+          <a href="#" class="hover-target">All Products</a>
+          <a href="#" class="hover-target">Coffee Beans</a>
+          <a href="#" class="hover-target">Ground Coffee</a>
+          <a href="#" class="hover-target">Gift Cards</a>
+          <a href="#" class="hover-target">Accessories</a>
+        </div>
+        
+        <div class="foot-col">
+          <h4>Collections</h4>
+          <a href="#" class="hover-target">Best Sellers</a>
+          <a href="#" class="hover-target">New Arrivals</a>
+          <a href="#" class="hover-target">Dark Roast</a>
+          <a href="#" class="hover-target">Medium Roast</a>
+          <a href="#" class="hover-target">Flavored Coffee</a>
+        </div>
+
+        <div class="foot-col">
+          <h4>Company</h4>
+          <a href="#" class="hover-target">About Us</a>
+          <a href="#" class="hover-target">Our Story</a>
+          <a href="#" class="hover-target">Sustainability</a>
+          <a href="#" class="hover-target">Reviews</a>
+          <a href="#" class="hover-target">Careers</a>
+        </div>
+
+        <div class="foot-col">
+          <h4>Help</h4>
+          <a href="#" class="hover-target">FAQs</a>
+          <a href="#" class="hover-target">Shipping & Delivery</a>
+          <a href="#" class="hover-target">Returns & Refunds</a>
+          <a href="#" class="hover-target">Terms & Conditions</a>
+          <a href="#" class="hover-target">Privacy Policy</a>
+        </div>
+
+        <div class="foot-col foot-payments">
+          <h4>We Accept</h4>
+          <div class="pay-icons">
+            <span class="pay-tag">VISA</span>
+            <span class="pay-tag">Mastercard</span>
+            <span class="pay-tag">PayPal</span>
+            <span class="pay-tag">Apple</span>
+            <span class="pay-tag">GPay</span>
+          </div>
+          <div class="secure-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#d5b497" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <div>
+              <strong>Secure Checkout</strong>
+              <p>100% Safe & Secure Payments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom text-center">
+        <p>&copy; 2024 Liceria Coffee. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP & Lenis JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

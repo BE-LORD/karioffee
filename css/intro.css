@@ -1,0 +1,328 @@
+/* ═══════════════════════════════════════════════════════════
+   LICERIA COFFEE — "FROM THE ROAST" CINEMATIC INTRO
+   Filmic letterbox frame over a Three.js roastery scene.
+   Palette: espresso void / roast ember / crema / gold.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --lc-void: #0d0704;
+  --lc-espresso: #1b0f07;
+  --lc-cream: #fafaf8;
+  --lc-milk: #f5efeb;
+  --lc-crema: #e9c89b;
+  --lc-tan: #c2a895;
+  --lc-gold: #d4af37;
+  --lc-ember: #ff7a2f;
+  --lc-bar: clamp(78px, 13vh, 138px);
+}
+
+body.lc-lock { overflow: hidden; }
+
+.lc-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--lc-void);
+  overflow: hidden;
+  font-family: var(--font-sans, 'Poppins', sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+/* the site hides the native cursor for its custom one, which sits
+   below the intro — restore it while the intro owns the screen */
+.lc-intro, .lc-intro * { cursor: auto; }
+.lc-intro .lc-skip { cursor: pointer; }
+
+.lc-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+/* ── Atmosphere layers ─────────────────────────────────────── */
+.lc-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--lc-cream);
+  opacity: 0;
+  pointer-events: none;
+}
+.lc-leak {
+  position: absolute;
+  top: -20vh;
+  left: -40vw;
+  width: 70vw;
+  height: 140vh;
+  z-index: 3;
+  background: radial-gradient(closest-side, rgba(255, 158, 74, 0.32), rgba(255, 122, 47, 0.08) 55%, transparent 75%);
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(6px);
+}
+.lc-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 46%, transparent 42%, rgba(6, 3, 1, 0.55) 100%),
+    linear-gradient(to bottom, rgba(6, 3, 1, 0.5), transparent 18%, transparent 82%, rgba(6, 3, 1, 0.5));
+}
+.lc-grain {
+  position: absolute;
+  inset: -120px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.34;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  animation: lc-grain 0.72s steps(4) infinite;
+}
+@keyframes lc-grain {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-46px, 30px); }
+  50%  { transform: translate(28px, -52px); }
+  75%  { transform: translate(-24px, -18px); }
+  100% { transform: translate(38px, 44px); }
+}
+
+/* ── Letterbox bars ────────────────────────────────────────── */
+.lc-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--lc-bar);
+  z-index: 8;
+  background: #060301;
+}
+.lc-bar-top { top: 0; }
+.lc-bar-bottom { bottom: 0; }
+.lc-bar-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 5vw, 72px);
+}
+
+.lc-chip {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--lc-milk);
+}
+.lc-chip em {
+  font-style: normal;
+  font-family: var(--font-sans, 'Poppins', sans-serif);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--lc-tan);
+  vertical-align: 0.14em;
+}
+
+.lc-skip {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 6px 2px;
+  font-family: var(--font-sans, 'Poppins', sans-serif);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 235, 0.55);
+  transition: color 0.35s ease, border-color 0.35s ease;
+}
+.lc-skip:hover { color: var(--lc-gold); border-color: var(--lc-gold); }
+.lc-skip:focus-visible {
+  outline: 1px solid var(--lc-gold);
+  outline-offset: 4px;
+  color: var(--lc-gold);
+}
+
+/* ── Progress hairline (top edge of bottom bar) ────────────── */
+.lc-progressline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(212, 175, 55, 0.16);
+}
+.lc-progressline i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(212, 175, 55, 0.55), var(--lc-gold));
+  transform: scaleX(0);
+  transform-origin: left center;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.55);
+}
+
+/* ── Rolling counter ───────────────────────────────────────── */
+.lc-counter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.28em;
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-weight: 600;
+  font-size: clamp(2.9rem, 9.5vh, 5.4rem);
+  line-height: 1;
+  color: var(--lc-milk);
+  transform: translateY(-6%);
+}
+.lc-digits { display: inline-flex; }
+.lc-col {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  width: 0.58em;
+  text-align: center;
+}
+.lc-col-h {
+  width: 0;
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lc-intro.lc-hundred .lc-col-h { width: 0.42em; }
+.lc-strip {
+  display: block;
+  will-change: transform;
+}
+.lc-strip i {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  font-style: normal;
+}
+.lc-pct {
+  font-size: 0.34em;
+  font-weight: 500;
+  color: var(--lc-gold);
+  letter-spacing: 0.08em;
+}
+
+/* ── Stage readout ─────────────────────────────────────────── */
+.lc-stage {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+}
+.lc-stage-mask { display: block; overflow: hidden; }
+.lc-stage-word {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.52em;
+  text-transform: uppercase;
+  text-indent: 0.52em; /* balance tracking */
+  color: var(--lc-crema);
+}
+.lc-stage-note {
+  display: block;
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  color: rgba(194, 168, 149, 0.62);
+}
+
+/* ── Center brand lockup (Act III) ─────────────────────────── */
+.lc-brand {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+}
+.lc-brand-eyebrow {
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  text-transform: uppercase;
+  color: rgba(233, 200, 155, 0.85);
+}
+.lc-brand-mask {
+  display: block;
+  overflow: hidden;
+  padding: 0.08em 0.35em; /* room for serif ascenders/italic overhang */
+  margin: -0.08em -0.35em;
+}
+.lc-brand-name {
+  display: block;
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-weight: 600;
+  font-size: clamp(4rem, 11vw, 8.4rem);
+  line-height: 1.04;
+  color: var(--lc-milk);
+  text-shadow: 0 4px 60px rgba(10, 4, 1, 0.55);
+}
+.lc-brand-rule {
+  display: block;
+  width: min(200px, 34vw);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--lc-gold), transparent);
+  transform: scaleX(0);
+}
+.lc-brand-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.55em;
+  text-indent: 0.55em;
+  text-transform: uppercase;
+  color: var(--lc-tan);
+}
+
+/* ── 2D fallback (no WebGL / CDN blocked / reduced motion) ─── */
+.lc-swirl2d {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 165vmax;
+  height: 165vmax;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  display: none;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side, rgba(233, 200, 155, 0.16), transparent 62%),
+    conic-gradient(from 0deg,
+      #140b05, #2c180a, #4a2a12, #6b3e1e, #3a2010,
+      #170d06, #351d0c, #59331a, #2b170a, #140b05);
+  filter: blur(34px) saturate(1.05);
+  animation: lc-swirl 26s linear infinite;
+}
+@keyframes lc-swirl { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.lc-intro.lc-2d .lc-canvas { display: none; }
+.lc-intro.lc-2d .lc-swirl2d { display: block; }
+
+/* ── Reduced motion: calm, quick, no theatrics ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .lc-grain { animation: none; }
+  .lc-swirl2d { animation: none; }
+}
+
+/* ── Small screens ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  :root { --lc-bar: clamp(66px, 12vh, 104px); }
+  .lc-counter { font-size: clamp(2.4rem, 8vh, 3.6rem); }
+  .lc-stage-word { font-size: 0.66rem; letter-spacing: 0.4em; text-indent: 0.4em; }
+  .lc-stage-note { font-size: 0.72rem; }
+  .lc-chip { font-size: 0.92rem; }
+  .lc-chip em { display: none; }
+  .lc-skip { font-size: 0.6rem; letter-spacing: 0.26em; }
+}
