@@ -95,9 +95,16 @@ body {
   color: var(--text-dark);
   line-height: 1.65;
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
   /* Hide default cursor on desktop for custom cursor */
   cursor: none;
   transition: var(--transition-color);
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Background 3D WebGL Canvas */
@@ -105,8 +112,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: -1;
   pointer-events: none;
   opacity: 0;
@@ -1070,13 +1077,14 @@ body.theme-crema .testi-card {
   .hero-content p { max-width: 100%; margin-bottom: 32px; }
   .hero-image-wrapper { margin-top: 20px; max-width: 400px; }
   .hero-decoration-text { display: none; }        /* hand-drawn arrow points nowhere when stacked */
+  .hero-circle-text { display: none; }            /* hide circle text to prevent overflow */
   .bean-2, .bean-4 { display: none; }             /* blurred beans read as smudges on small screens */
   .bean-1 { width: 52px; right: 4%; }
   .bean-3 { width: 44px; right: 8%; }
   .cup-steam { height: 110px; top: 2%; }
   .hero-social-proof { margin-top: 36px; }
-  .hero-actions .flex-row-gap { gap: 14px; }
-  .btn-solid-brown, .btn-outline { padding: 14px 28px; font-size: 0.95rem; }
+  .hero-actions .flex-row-gap { gap: 14px; flex-direction: column; width: 100%; max-width: 320px; margin: 0 auto; }
+  .btn-solid-brown, .btn-outline { width: 100%; text-align: center; justify-content: center; padding: 15px 28px; font-size: 1rem; }
 
   /* Stats card: 2-up grid instead of a squeezed row */
   .hero-stats-container { margin-top: 10px; }
