@@ -802,13 +802,16 @@ function playStep(stepIndex) {
   if (activeBtn) {
     activeBtn.classList.add("active");
 
-    // Auto-scroll the horizontal carousel on mobile to center the active item
+    // Auto-scroll the horizontal carousel on mobile to center the active item WITHOUT yanking vertical page scroll
     if (window.innerWidth <= 767) {
-      activeBtn.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
+      const container = document.querySelector(".stepper-steps");
+      if (container) {
+        const scrollPos = activeBtn.offsetLeft - (container.offsetWidth / 2) + (activeBtn.offsetWidth / 2);
+        container.scrollTo({
+          left: scrollPos,
+          behavior: "smooth"
+        });
+      }
     }
 
     // Animate progress bar (5s auto advance)
@@ -826,13 +829,18 @@ function playStep(stepIndex) {
     activeImg.classList.add("active");
   }
 
-  // Timer for auto-play
+  // Timer for auto-play (only if not manually interacted)
   clearTimeout(stepperTimer);
-  stepperTimer = setTimeout(() => {
-    let nextStep = (stepIndex % 4) + 1;
-    playStep(nextStep);
-  }, 5050);
+  if (!stepperInteracted) {
+    stepperTimer = setTimeout(() => {
+      let nextStep = (stepIndex % 4) + 1;
+      playStep(nextStep);
+    }, 5050);
+  }
 }
+
+// Global flag to stop autoplay when user interacts
+let stepperInteracted = false;
 
 // Pause the autoplay loop when the tab is hidden (no invisible cycling)
 document.addEventListener("visibilitychange", () => {
@@ -849,8 +857,11 @@ function initBrewStepper() {
 
   steps.forEach((step) => {
     step.addEventListener("click", () => {
+      stepperInteracted = true;
+      clearTimeout(stepperTimer);
       const stepIdx = parseInt(step.getAttribute("data-step"));
       playStep(stepIdx);
+      clearTimeout(stepperTimer); // Clear again just in case playStep restarted it
     });
   });
 
@@ -862,14 +873,17 @@ function initBrewStepper() {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             const stepIdx = parseInt(entry.target.getAttribute("data-step"));
             if (currentStep !== stepIdx) {
+              stepperInteracted = true;
+              clearTimeout(stepperTimer);
               playStep(stepIdx);
+              clearTimeout(stepperTimer); // Prevent autoplay from restarting
             }
           }
         });
       },
       {
         root: document.querySelector(".stepper-steps"),
-        threshold: 0.6,
+        threshold: 0.5,
       },
     );
 
