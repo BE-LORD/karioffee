@@ -44,3 +44,27 @@ Working directory: c:\Users\pr7n8\Downloads\anti coffee zip\anti coffee
 
 ### Test Verification
 - [ ] `pytest -v -k "not test_static_assets_resolve"` runs successfully and all 17 tests pass.
+
+## Follow-up — 2026-07-04T14:16:52+05:30
+
+Restructure and polish the Karioffee coffee brand website to ensure it is extremely polished, interactive, responsive, fast, and bug-free across both mobile and desktop views, creating a loop of continuous improvements.
+
+Working directory: c:\Users\pr7n8\Downloads\anti coffee zip\anti coffee
+Integrity mode: development
+
+## Requirements
+
+### R1. Complete Mobile & Desktop Polish
+Ensure the website layout is fully responsive, has zero horizontal overflow, utilizes interactive swipeable snap carousels on mobile, and premium micro-interactions, smooth scrolling, and scroll-driven animations on desktop.
+
+### R2. Code Quality & Performance Optimization
+Validate HTML structure, optimize asset loading (ensure images are compressed and lazy-loaded), format CSS/JS files, ensure zero console errors/warnings, and check that the site runs perfectly at 60fps.
+
+## Acceptance Criteria
+
+### Interactive Experience & Layout Quality
+- [ ] Zero horizontal scrolling or overflow bugs on mobile view (down to 320px width).
+- [ ] Interactive horizontal scroll-snap carousels function correctly for products and ritual steps on mobile.
+- [ ] Visual polish (glassmorphism, shimmer effects, hover states) is consistent and premium on both desktop and mobile.
+- [ ] Prettier formatting check passes on all HTML, CSS, and JS files.
+- [ ] Console logs are free of any warnings or errors.

@@ -882,6 +882,9 @@ function initBrewStepper() {
 
 // --- TESTIMONIALS STACKED DECK LOGIC ---
 function initTestimonialsDeck() {
+  // Mobile: CSS scroll-snap handles testimonials natively
+  if (window.innerWidth <= 767) return;
+
   const deck = document.querySelector(".testi-deck");
   if (!deck) return;
 

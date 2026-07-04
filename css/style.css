@@ -109,7 +109,8 @@ body {
   transition: var(--transition-color);
 }
 
-html {
+html,
+html body {
   overflow-x: hidden;
   width: 100%;
 }
@@ -1852,10 +1853,10 @@ body.theme-crema .testi-card {
   .products,
   .discover,
   .made-easy {
-    padding: 90px 0 60px;
+    padding: 60px 0 40px;
   }
   .testimonials {
-    padding: 80px 0;
+    padding: 50px 0 40px;
   }
 }
 @media (max-width: 768px) {
@@ -1872,13 +1873,49 @@ body.theme-crema .testi-card {
     grid-template-columns: 1fr;
     gap: 40px;
   }
+  /* Testimonials: horizontal scroll-snap carousel on mobile */
   .testi-deck {
-    height: 440px;
+    position: relative;
+    height: auto;
     max-width: 100%;
     margin-top: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding-bottom: 24px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    perspective: none;
+  }
+  .testi-deck::-webkit-scrollbar {
+    display: none;
   }
   .testi-card {
+    position: relative;
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+    opacity: 1;
+    transform: none;
     padding: 45px 25px 25px;
+    height: auto;
+  }
+  .testi-card:nth-child(1),
+  .testi-card:nth-child(2),
+  .testi-card:nth-child(3) {
+    transform: none;
+    opacity: 1;
+    z-index: auto;
+  }
+  .testi-card.swipe-out {
+    transform: none !important;
+    opacity: 1 !important;
+    pointer-events: auto;
   }
   .testi-text {
     font-size: 1rem;
@@ -1893,7 +1930,7 @@ body.theme-crema .testi-card {
     display: none;
   }
   .news-banner {
-    padding: 45px 24px;
+    padding: 35px 20px;
   }
 
   /* Hero: tighter, centered, nothing bleeding off-screen */
@@ -2009,7 +2046,7 @@ body.theme-crema .testi-card {
 
   .discover-image {
     padding: 20px;
-    max-width: 420px;
+    max-width: 300px;
     margin: 0 auto;
   }
 
@@ -2103,6 +2140,13 @@ body.theme-crema .testi-card {
     scroll-snap-align: center;
     max-width: none;
   }
+  /* Spacer so the last card snaps cleanly */
+  .product-grid::after,
+  .features-list::after,
+  .stepper-steps::after {
+    content: "";
+    flex: 0 0 1px;
+  }
 
   .features-list {
     display: flex;
@@ -2156,10 +2200,21 @@ body.theme-crema .testi-card {
 
   .footer-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 20px;
   }
   .foot-brand {
     grid-column: 1 / -1;
+  }
+  .foot-col {
+    font-size: 0.9rem;
+  }
+  .foot-col h4 {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  .foot-col a {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
   }
 }
 
@@ -2191,7 +2246,10 @@ body.theme-crema .testi-card {
     font-size: 0.85rem;
   }
   .testi-deck {
-    height: 480px;
+    height: auto;
+  }
+  .testi-card {
+    flex: 0 0 90%;
   }
   .testi-deck-controls {
     margin-top: 10px;
