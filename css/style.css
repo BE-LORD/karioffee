@@ -1185,6 +1185,9 @@ body.theme-moss .discover .btn-solid-brown:hover {
   gap: 80px;
   align-items: center;
 }
+.discover-grid > * {
+  min-width: 0;
+}
 .features-list {
   margin: 40px 0;
   display: flex;
@@ -1268,6 +1271,9 @@ body.theme-moss .green-circle {
   gap: 80px;
   align-items: center;
   margin-top: 60px;
+}
+.stepper-layout > * {
+  min-width: 0;
 }
 .stepper-visuals {
   position: relative;
@@ -1885,10 +1891,10 @@ body.theme-crema .testi-card {
     scroll-snap-type: x mandatory;
     gap: 16px;
     padding-bottom: 24px;
-    margin-left: -24px;
-    margin-right: -24px;
-    padding-left: 24px;
-    padding-right: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     perspective: none;
@@ -1900,10 +1906,15 @@ body.theme-crema .testi-card {
     position: relative;
     flex: 0 0 85%;
     scroll-snap-align: center;
-    opacity: 1;
-    transform: none;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    z-index: auto !important;
     padding: 45px 25px 25px;
     height: auto;
+  }
+  .testi-deck-controls {
+    display: none;
   }
   .testi-card:nth-child(1),
   .testi-card:nth-child(2),
@@ -2125,10 +2136,10 @@ body.theme-crema .testi-card {
     scroll-snap-type: x mandatory;
     gap: 16px;
     padding-bottom: 24px;
-    margin-left: -24px; /* Pull to edge */
-    margin-right: -24px;
-    padding-left: 24px; /* Maintain padding for first/last items */
-    padding-right: 24px;
+    margin-left: -20px; /* Pull to edge */
+    margin-right: -20px;
+    padding-left: 20px; /* Maintain padding for first/last items */
+    padding-right: 20px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -2156,10 +2167,10 @@ body.theme-crema .testi-card {
     scroll-snap-type: x mandatory;
     gap: 16px;
     padding-bottom: 24px;
-    margin-left: -24px;
-    margin-right: -24px;
-    padding-left: 24px;
-    padding-right: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
     scrollbar-width: none;
   }
   .features-list::-webkit-scrollbar {
@@ -2182,10 +2193,10 @@ body.theme-crema .testi-card {
     scroll-snap-type: x mandatory;
     gap: 16px;
     padding-bottom: 24px;
-    margin-left: -24px;
-    margin-right: -24px;
-    padding-left: 24px;
-    padding-right: 24px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
     scrollbar-width: none;
   }
   .stepper-steps::-webkit-scrollbar {
