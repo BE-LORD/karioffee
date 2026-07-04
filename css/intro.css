@@ -186,11 +186,12 @@ body.lc-lock { overflow: hidden; }
 }
 .lc-col {
   display: inline-block;
-  height: 1em;
+  height: 1.25em;
   overflow: hidden;
   width: 0.58em;
   text-align: center;
   flex-shrink: 0;
+  vertical-align: bottom;
 }
 .lc-col-h {
   width: 0;
@@ -203,8 +204,8 @@ body.lc-lock { overflow: hidden; }
 }
 .lc-strip i {
   display: block;
-  height: 1em;
-  line-height: 1;
+  height: 1.25em;
+  line-height: 1.25em;
   font-style: normal;
 }
 .lc-pct {
