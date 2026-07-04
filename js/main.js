@@ -16,13 +16,8 @@ const lenis = new Lenis({
   infinite: false,
 });
 
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
-
-// Integrate Lenis with GSAP ScrollTrigger
+// Single driver: GSAP's ticker runs Lenis (a second rAF loop here would
+// double-pump the scroll every frame and cause visible jank).
 lenis.on('scroll', ScrollTrigger.update);
 
 gsap.ticker.add((time) => {
@@ -53,8 +48,10 @@ if (cursor && cursorFollower && window.innerWidth > 992) {
     followerX += (mouseX - followerX) * 0.15;
     followerY += (mouseY - followerY) * 0.15;
     
-    gsap.set(cursor, { x: cursorX, y: cursorY });
-    gsap.set(cursorFollower, { x: followerX, y: followerY });
+    // xPercent keeps the dot centered on the pointer (gsap transforms would
+    // otherwise overwrite the CSS translate(-50%,-50%) centering)
+    gsap.set(cursor, { x: cursorX, y: cursorY, xPercent: -50, yPercent: -50 });
+    gsap.set(cursorFollower, { x: followerX, y: followerY, xPercent: -50, yPercent: -50 });
   });
 
   // Hover Effects
@@ -77,8 +74,9 @@ magneticEls.forEach((el) => {
   if(window.innerWidth > 992) {
     el.addEventListener('mousemove', function(e) {
       const position = el.getBoundingClientRect();
-      const x = e.pageX - position.left - position.width / 2;
-      const y = e.pageY - position.top - position.height / 2;
+      // clientX/Y match getBoundingClientRect's viewport space (pageX drifts once scrolled)
+      const x = e.clientX - position.left - position.width / 2;
+      const y = e.clientY - position.top - position.height / 2;
       
       const strength = el.classList.contains('magnetic-btn') ? 20 : 10;
       
@@ -204,6 +202,34 @@ if (featuresList) {
   );
 }
 
+// Hero cup: scroll-linked cinematic drift — works on touch too, where mouse parallax can't
+if (!prefersReducedMotion) {
+  gsap.to('.main-cup', {
+    yPercent: 12,
+    rotation: 6,
+    scale: 0.94,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1
+    }
+  });
+  // (circle text already spins via CSS keyframes — scroll-scrubbing its
+  // transform would fight the animation, so we scrub opacity instead)
+  gsap.to('.hero-circle-text', {
+    opacity: 0.1,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1.5
+    }
+  });
+}
+
 // Image Parallax Effect
 if (!prefersReducedMotion) gsap.utils.toArray('.parallax-img img').forEach(img => {
   gsap.to(img, {
@@ -217,53 +243,6 @@ if (!prefersReducedMotion) gsap.utils.toArray('.parallax-img img').forEach(img =
     }
   });
 });
-
-// Coffee Made Easy SVG Dashed Line Drawing
-const easyGrid = document.querySelector('.easy-grid');
-if(easyGrid) {
-  const dashedPaths = easyGrid.querySelectorAll('.dashed-path');
-  
-  dashedPaths.forEach(path => {
-    const length = path.getTotalLength();
-    gsap.set(path, { strokeDasharray: `${length}, ${length}`, strokeDashoffset: length });
-    
-    gsap.to(path, {
-      strokeDashoffset: 0,
-      duration: 2,
-      ease: "power2.inOut",
-      scrollTrigger: {
-        trigger: easyGrid,
-        start: "top 60%"
-      }
-    });
-  });
-  
-  // Stagger items left and right
-  gsap.fromTo('.stagger-item-left', 
-    { x: -50, opacity: 0 }, 
-    { x: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: 'power3.out', scrollTrigger: { trigger: easyGrid, start: "top 60%" }}
-  );
-  gsap.fromTo('.stagger-item-right', 
-    { x: 50, opacity: 0 }, 
-    { x: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: 'power3.out', scrollTrigger: { trigger: easyGrid, start: "top 60%" }}
-  );
-}
-
-// Testimonials Card Reveal
-const testiGrid = document.querySelector('.testi-grid');
-if (testiGrid) {
-  const cards = testiGrid.querySelectorAll('.card-reveal');
-  gsap.fromTo(cards, 
-    { y: 50, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: 'power3.out',
-      scrollTrigger: {
-        trigger: testiGrid,
-        start: "top 80%"
-      }
-    }
-  );
-}
-
 
 // --- 7. Navbar Scroll Effect & Active Link Tracking ---
 const navbar = document.getElementById('navbar');
@@ -310,12 +289,11 @@ window.addEventListener('scroll', () => {
   }
   scrollSpy();
 });
+lenis.on('scroll', scrollSpy);
 
-// Run once initially and on Lenis scroll
+// Run once initially (Lenis drives native scroll, so the window
+// 'scroll' listener above already covers Lenis-driven movement)
 window.addEventListener('DOMContentLoaded', scrollSpy);
-if (typeof lenis !== 'undefined') {
-  lenis.on('scroll', scrollSpy);
-}
 
 // --- MOBILE MENU TOGGLER & CLICK ACTIVE LINK SWITCH ---
 const mobileBtn = document.querySelector('.nav-mobile-btn');
@@ -345,21 +323,29 @@ if (mobileBtn && navLinks) {
 }
 
 
-// --- 8. Stat Number Counters ---
+// --- 8. Stat Number Counters (fire when the stats scroll into view) ---
+function initCounters() {
+  ScrollTrigger.create({
+    trigger: '.hero-stats',
+    start: 'top 92%',
+    once: true,
+    onEnter: runCounters
+  });
+}
+
 function runCounters() {
   const counters = document.querySelectorAll('.stat-number');
   counters.forEach(counter => {
     const target = +counter.getAttribute('data-target');
     const prefix = counter.getAttribute('data-prefix') || '';
-    
-    gsap.to(counter, {
-      innerHTML: target,
+    const state = { val: 0 }; // tween a plain number, not the "1,000+" markup
+
+    gsap.to(state, {
+      val: target,
       duration: 2.5,
-      snap: { innerHTML: 1 },
       ease: "power3.out",
       onUpdate: function() {
-        // Format with commas and add "+" if needed
-        counter.innerHTML = prefix + Math.round(this.targets()[0].innerHTML).toLocaleString() + "+";
+        counter.textContent = prefix + Math.round(state.val).toLocaleString() + "+";
       }
     });
   });
@@ -393,8 +379,6 @@ function playHeroAnimation() {
     .fromTo('.hero-anim', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out' }, "-=0.5")
     .fromTo('.main-cup', { y: 100, scale: 0.8, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 1.5, ease: 'elastic.out(1, 0.7)' }, "-=1")
     .fromTo('.hero-anim-stats', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, "-=0.8");
-    
-  runCounters();
 }
 
 // --- Helper Linear Interpolation ---
@@ -452,8 +436,7 @@ function initBg3d() {
   const mat = new THREE.MeshStandardMaterial({
     color: 0x3d2516,
     roughness: 0.6,
-    metalness: 0.1,
-    bumpScale: 0.05
+    metalness: 0.1
   });
 
   // Coffee Bean Instanced Mesh
@@ -543,11 +526,18 @@ function initBg3d() {
     bgCamera.updateProjectionMatrix();
   });
 
-  // Mouse Listener
+  // Mouse Listener (desktop) / Gyroscope (mobile) — the 3D space always answers the user
   if (window.innerWidth > 992) {
     document.addEventListener('mousemove', (e) => {
       bgMouseX = (e.clientX / window.innerWidth - 0.5) * 2.5;
       bgMouseY = (e.clientY / window.innerHeight - 0.5) * 2.5;
+    });
+  } else if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+    // Android & non-permission browsers: tilt the phone, tilt the space
+    window.addEventListener('deviceorientation', (e) => {
+      if (e.gamma === null) return;
+      bgMouseX = Math.max(-1.5, Math.min(1.5, (e.gamma / 45) * 1.5));
+      bgMouseY = Math.max(-1.5, Math.min(1.5, ((e.beta - 45) / 45) * 1.2));
     });
   }
 
@@ -566,8 +556,9 @@ function initBg3d() {
     bgCamera.position.y = lerp(bgCamera.position.y, -bgMouseY, 0.05);
     bgCamera.lookAt(0, 0, 0);
 
-    // Update Coffee Beans
-    const dummyObj = new THREE.Object3D();
+    // Update Coffee Beans (reuse the setup-time dummy — allocating a fresh
+    // Object3D every frame churns the GC)
+    const dummyObj = dummy;
     for (let i = 0; i < bgBeanCount; i++) {
       const data = bgBeansData[i];
 
@@ -649,7 +640,7 @@ function initScrollThemes() {
   // The intro exits by brightening to cream, so the hero opens in crema
   // for a seamless handoff; darkness returns in the Origin chapter.
   const sections = [
-    { id: '#home', theme: 'theme-crema' },
+    { id: '#home', theme: 'theme-espresso' },
     { id: '#shop', theme: 'theme-crema' },
     { id: '#about', theme: 'theme-moss' },
     { id: '#ritual', theme: 'theme-crema' },
@@ -724,6 +715,15 @@ function playStep(stepIndex) {
   }, 5050);
 }
 
+// Pause the autoplay loop when the tab is hidden (no invisible cycling)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearTimeout(stepperTimer);
+  } else if (siteStarted && document.querySelector('.stepper-step')) {
+    playStep(currentStep);
+  }
+});
+
 function initBrewStepper() {
   const steps = document.querySelectorAll('.stepper-step');
   if (!steps.length) return;
@@ -797,13 +797,50 @@ function initTestimonialsDeck() {
     prevBtn.addEventListener('click', () => {
       currentTop = (currentTop - 1 + cards.length) % cards.length;
       const newTopCard = cards[currentTop];
-      
+
       newTopCard.style.transform = 'translateX(-120%) translateY(-30px) rotate(-15deg)';
       newTopCard.style.opacity = '0';
       newTopCard.offsetHeight; // Force reflow
       updateDeck();
     });
   }
+
+  // Touch swipe: flick the top card like a real deck
+  let touchStartX = 0, touchStartY = 0, swiping = false;
+  deck.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    swiping = true;
+  }, { passive: true });
+
+  deck.addEventListener('touchmove', (e) => {
+    if (!swiping) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+      const topCard = cards[currentTop];
+      topCard.style.transition = 'none';
+      topCard.style.transform = `translateX(${dx}px) rotate(${dx * 0.05}deg)`;
+    }
+  }, { passive: true });
+
+  deck.addEventListener('touchend', (e) => {
+    if (!swiping) return;
+    swiping = false;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const topCard = cards[currentTop];
+    topCard.style.transition = '';
+    if (Math.abs(dx) > 70) {
+      topCard.style.transform = `translateX(${dx > 0 ? '' : '-'}120%) translateY(-30px) rotate(${dx > 0 ? 15 : -15}deg)`;
+      topCard.style.opacity = '0';
+      setTimeout(() => {
+        currentTop = (currentTop + 1) % cards.length;
+        updateDeck();
+      }, 300);
+    } else {
+      updateDeck(); // snap back
+    }
+  }, { passive: true });
 
   updateDeck();
 }
@@ -814,24 +851,41 @@ function initTestimonialsDeck() {
 // underneath the opening frame for a seamless handoff.
 lenis.stop();
 window.scrollTo(0, 0);
+function initSmoothScrollAnchors() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        lenis.scrollTo(target);
+      }
+    });
+  });
+}
+
 let siteStarted = false;
 function startSite() {
   if (siteStarted) return;
   siteStarted = true;
   lenis.start();
   playHeroAnimation();
+  initCounters();
 
   // Initialize Liceria Cinematic Upgrades
   initBg3d();
   initScrollThemes();
   initBrewStepper();
   initTestimonialsDeck();
+  initSmoothScrollAnchors();
+  scrollSpy();
 }
 if (window.__liceriaIntroDone || !document.getElementById('liceria-intro')) {
   startSite();
 } else {
   window.addEventListener('liceria:introdone', startSite, { once: true });
-  setTimeout(startSite, 18000); // Absolute safety
+  setTimeout(startSite, 6000); // Absolute safety
 }
 
 // --- Scroll Progress Ring ---
@@ -863,18 +917,19 @@ if (marqueeContent) {
     speed = 1 + Math.abs(e.velocity) * 0.05;
   });
 
-  gsap.ticker.add(() => {
-    xPos += 2 * speed * direction;
+  gsap.ticker.add((time, deltaTime) => {
+    // px-per-second, scaled by real frame delta — same speed on 60Hz and 120Hz
+    xPos += 120 * speed * direction * (deltaTime / 1000);
     if (xPos <= -marqueeContent.scrollWidth / 2) xPos = 0;
     if (xPos >= 0 && direction === 1) xPos = -marqueeContent.scrollWidth / 2;
     gsap.set(marqueeContent, { x: xPos });
-    
+
     speed += (1 - speed) * 0.05;
   });
 }
 
-// --- 3D Tilt Initialization ---
-if (typeof VanillaTilt !== 'undefined') {
+// --- 3D Tilt Initialization (desktop only — tilt fights the scroll gesture on touch) ---
+if (typeof VanillaTilt !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
   VanillaTilt.init(document.querySelectorAll('.card-reveal'), {
     max: 15,
     speed: 400,
@@ -882,6 +937,56 @@ if (typeof VanillaTilt !== 'undefined') {
     'max-glare': 0.2,
   });
 }
+
+// --- Premium Toast Notifications ---
+function showToast(message) {
+  let toast = document.querySelector('.toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.setAttribute('role', 'status');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// --- Newsletter Form (was reloading the page on submit) ---
+const newsForm = document.querySelector('.news-form');
+if (newsForm) {
+  newsForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = newsForm.querySelector('input[type="email"]');
+    if (email && email.value) {
+      showToast('☕ Welcome to the roast — 25% off is in your inbox.');
+      email.value = '';
+    }
+  });
+}
+
+// --- Cart & Wishlist micro-interactions (buttons previously did nothing) ---
+let cartCount = 0;
+const cartBadge = document.querySelector('.cart-badge');
+document.querySelectorAll('.btn-cart').forEach(btn => {
+  btn.addEventListener('click', () => {
+    cartCount++;
+    if (cartBadge) {
+      cartBadge.textContent = cartCount;
+      gsap.fromTo(cartBadge, { scale: 1.6 }, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+    }
+    const name = btn.closest('.product-card')?.querySelector('h3')?.textContent || 'Item';
+    showToast(`${name} added to cart`);
+    gsap.fromTo(btn, { scale: 0.85 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' });
+  });
+});
+document.querySelectorAll('.btn-heart').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('liked');
+    gsap.fromTo(btn, { scale: 0.8 }, { scale: 1, duration: 0.45, ease: 'back.out(3)' });
+  });
+});
 
 // --- Upgraded Cursor Drag Hover ---
 document.querySelectorAll('.product-card').forEach(card => {

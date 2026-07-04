@@ -25,7 +25,7 @@
 
   /* If GSAP failed to load there is no show — get out of the way. */
   if (typeof gsap === 'undefined') {
-    root.remove();
+    root.style.display = 'none';
     announceDone();
     return;
   }
@@ -127,17 +127,20 @@
   var pushed = false;
   var chaseBoost = 1;
 
-  var paceDur = reduced ? 1.1 : 5.8;
+  var paceDur = reduced ? 0.6 : 1.5;
   var pace = gsap.to(state, { target: 92, duration: paceDur, ease: 'sine.inOut' });
 
-  var loaded = document.readyState === 'complete';
-  if (!loaded) window.addEventListener('load', function () { loaded = true; }, { once: true });
+  var loaded = document.readyState === 'complete' || document.readyState === 'interactive';
+  if (!loaded) {
+    window.addEventListener('load', function () { loaded = true; }, { once: true });
+    setTimeout(function () { loaded = true; }, 1200);
+  }
 
   function pushFull(fast) {
     if (pushed) return;
     pushed = true;
     pace.kill();
-    gsap.to(state, { target: 100, duration: fast ? 0.7 : 1.5, ease: 'power2.inOut', overwrite: true });
+    gsap.to(state, { target: 100, duration: fast ? 0.3 : 0.6, ease: 'power2.inOut', overwrite: true });
   }
 
   function skip() {
@@ -176,7 +179,7 @@
 
   function build3D() {
     var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 720 ? 1.5 : 1.75));
     renderer.setSize(window.innerWidth, window.innerHeight);
     if ('outputEncoding' in renderer && THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.autoClear = false;
@@ -285,6 +288,31 @@
     liquid.rotation.x = -Math.PI / 2;
     liquid.position.y = CUP_Y - 0.02;
     scene.add(liquid);
+
+    /* — steam: soft wisps climbing out of the cup as we dive — */
+    var STEAM = window.innerWidth < 720 ? 40 : 90;
+    var steamGeo = new THREE.BufferGeometry();
+    var steamPos = new Float32Array(STEAM * 3);
+    var std = [];
+    for (i = 0; i < STEAM; i++) {
+      std.push({
+        r: Math.random() * 1.1,
+        a: Math.random() * Math.PI * 2,
+        y: Math.random() * 4.5,
+        v: 0.25 + Math.random() * 0.5,
+        w: (Math.random() - 0.5) * 1.4,
+        drift: 0.15 + Math.random() * 0.3
+      });
+    }
+    steamGeo.setAttribute('position', new THREE.BufferAttribute(steamPos, 3));
+    var steamTex = makeRadialTex([[0, 'rgba(248,244,240,0.65)'], [0.45, 'rgba(238,230,222,0.25)'], [1, 'rgba(238,230,222,0)']]);
+    var steamMat = new THREE.PointsMaterial({
+      color: 0xf5efe9, size: 0.85, map: steamTex, transparent: true, opacity: 0,
+      blending: THREE.NormalBlending, depthWrite: false, sizeAttenuation: true
+    });
+    var steam = new THREE.Points(steamGeo, steamMat);
+    steam.position.y = CUP_Y;
+    scene.add(steam);
 
     var haloTex = makeRadialTex([[0, 'rgba(255,181,69,0.55)'], [0.4, 'rgba(212,175,55,0.22)'], [1, 'rgba(212,175,55,0)']]);
     var halo = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -420,6 +448,24 @@
       }
       sparks.visible = sVis > 0.01;
 
+      /* steam wisps rise from the cup once the rim is alive */
+      var stVis = Math.max(shot.ringGlow, shot.cremaO * 0.5) * 0.55;
+      steamMat.opacity = stVis;
+      steam.visible = stVis > 0.01;
+      if (steam.visible) {
+        for (i = 0; i < STEAM; i++) {
+          var w = std[i];
+          w.y += w.v * dt;
+          w.a += w.w * dt;
+          if (w.y > 5) { w.y = 0; w.r = Math.random() * 1.1; }
+          var spread = w.r + w.y * w.drift;         /* plume widens as it climbs */
+          steamPos[i * 3] = Math.cos(w.a) * spread;
+          steamPos[i * 3 + 1] = w.y;
+          steamPos[i * 3 + 2] = Math.sin(w.a) * spread;
+        }
+        steamGeo.attributes.position.needsUpdate = true;
+      }
+
       /* cup rim */
       var rg = shot.ringGlow;
       ring.material.opacity = rg * 0.95;
@@ -461,6 +507,8 @@
       beanMat.dispose();
       sparkGeo.dispose();
       sparkMat.dispose();
+      steamGeo.dispose();
+      steamMat.dispose();
       cremaMat.dispose();
       renderer.dispose();
     }
@@ -505,7 +553,7 @@
     cleanupDone = true;
     gsap.ticker.remove(tick);
     if (scene3d) scene3d.dispose();
-    root.remove();
+    root.style.display = 'none';
     announceDone();
   }
 
@@ -573,7 +621,7 @@
       announceDone();
       gsap.to(root, { opacity: 0, duration: 0.5, onComplete: cleanup });
     }
-  }, 16000);
+  }, 5000);
 
   /* Debug/testing hook */
   window.LiceriaIntro = {

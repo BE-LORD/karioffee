@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/intro.css">
 </head>
-<body>
+<body class="lc-lock">
 
   <!-- BACKGROUND 3D SPACE -->
   <canvas id="bg3dCanvas"></canvas>
@@ -146,19 +146,20 @@
         <div class="hero-circle-text">
            <svg viewBox="0 0 100 100" width="100%" height="100%">
              <path id="circlePath" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-             <text font-family="Poppins" font-size="6.5" font-weight="600" letter-spacing="1" fill="#C2A895">
+             <text font-family="Outfit, sans-serif" font-size="6.5" font-weight="600" letter-spacing="1" fill="#C2A895">
                <textPath href="#circlePath" startOffset="0%">FRESHLY ROASTED • PREMIUM BLENDS •</textPath>
              </text>
            </svg>
         </div>
         
         <!-- Floating Beans -->
-        <div class="floating-bean bean-1 parallax-mouse" data-speed="20" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
-        <div class="floating-bean bean-2 parallax-mouse" data-speed="-15" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
-        <div class="floating-bean bean-3 parallax-mouse" data-speed="10" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
-        <div class="floating-bean bean-4 parallax-mouse" data-speed="-25" style="width: 60px; height: 60px;"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-1 parallax-mouse" data-speed="20"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-2 parallax-mouse" data-speed="-15"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-3 parallax-mouse" data-speed="10"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
+        <div class="floating-bean bean-4 parallax-mouse" data-speed="-25"><svg viewBox="0 0 24 24" fill="#B87B44" stroke="#B87B44" stroke-width="1" style="width:100%; height:100%;"><path d="M10 2c-4 0-7 3-7 7 0 6 9 13 9 13s9-7 9-13c0-4-3-7-7-7a7 7 0 0 0-4 0Z"></path><path d="M14 6c-3 2-6 7-6 10" stroke="white" stroke-width="1.5"></path></svg></div>
 
-        <img src="assets/images/hero-coffee-cup.png" alt="Coffee Cup" class="main-cup parallax-mouse" data-speed="-5">
+        <div class="cup-steam" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img src="assets/images/hero-coffee-cup.png" alt="Coffee Cup" class="main-cup parallax-mouse" data-speed="-5" fetchpriority="high" decoding="async">
         
         <div class="hero-decoration-text">
            <svg class="hand-arrow draw-anim" viewBox="0 0 100 100"><path class="path-draw" d="M10,80 Q30,20 80,40" fill="none" stroke="#6b4c3a" stroke-width="2" stroke-linecap="round"/><path class="path-draw" d="M70,30 L80,40 L70,50" fill="none" stroke="#6b4c3a" stroke-width="2" stroke-linecap="round"/></svg>
@@ -239,7 +240,7 @@
         <!-- Item 1 -->
         <div class="product-card card-reveal hover-target">
           <div class="product-img-wrapper">
-            <img src="assets/images/italian-coffee.png" alt="Italian Roast">
+            <img src="assets/images/italian-coffee.png" alt="Italian Roast" loading="lazy" decoding="async">
           </div>
           <div class="product-info">
             <h3>Italian Roast</h3>
@@ -273,7 +274,7 @@
         <!-- Item 2 -->
         <div class="product-card card-reveal hover-target">
           <div class="product-img-wrapper">
-            <img src="assets/images/viennese-coffee.png" alt="Viennese Blend">
+            <img src="assets/images/viennese-coffee.png" alt="Viennese Blend" loading="lazy" decoding="async">
           </div>
           <div class="product-info">
             <h3>Viennese Blend</h3>
@@ -307,7 +308,7 @@
         <!-- Item 3 -->
         <div class="product-card card-reveal hover-target">
           <div class="product-img-wrapper">
-            <img src="assets/images/new-orleans-coffee.png" alt="New Orleans Roast">
+            <img src="assets/images/new-orleans-coffee.png" alt="New Orleans Roast" loading="lazy" decoding="async">
           </div>
           <div class="product-info">
             <h3>New Orleans Roast</h3>
@@ -341,7 +342,7 @@
         <!-- Item 4 -->
         <div class="product-card card-reveal hover-target">
           <div class="product-img-wrapper">
-            <img src="assets/images/moroccan-coffee.png" alt="Moroccan Blend">
+            <img src="assets/images/moroccan-coffee.png" alt="Moroccan Blend" loading="lazy" decoding="async">
           </div>
           <div class="product-info">
             <h3>Moroccan Blend</h3>
@@ -438,7 +439,7 @@
       
       <div class="discover-image parallax-img">
         <div class="green-circle"></div>
-        <img src="assets/images/coffee-cups-stack.png" alt="Stacked Coffee Cups">
+        <img src="assets/images/coffee-cups-stack.png" alt="Stacked Coffee Cups" loading="lazy" decoding="async">
         <div class="leaves-bg"></div>
       </div>
     </div>
@@ -456,9 +457,9 @@
       <div class="stepper-layout">
         <!-- Left Visual Panel -->
         <div class="stepper-visuals hover-target">
-          <img src="assets/images/coffee-easy-cup.png" alt="Fine Grind" class="stepper-illust active" data-step="1">
-          <img src="assets/images/italian-coffee.png" alt="Slow Bloom" class="stepper-illust" data-step="2">
-          <img src="assets/images/newsletter-latte.png" alt="Extraction" class="stepper-illust" data-step="3">
+          <img src="assets/images/coffee-easy-cup.png" alt="Fine Grind" class="stepper-illust active" data-step="1" loading="lazy" decoding="async">
+          <img src="assets/images/italian-coffee.png" alt="Slow Bloom" class="stepper-illust" data-step="2" loading="lazy" decoding="async">
+          <img src="assets/images/newsletter-latte.png" alt="Extraction" class="stepper-illust" data-step="3" loading="lazy" decoding="async">
           <img src="assets/images/hero-coffee-cup.png" alt="The First Pour" class="stepper-illust" data-step="4">
         </div>
 
@@ -578,7 +579,7 @@
     <div class="container">
       <div class="news-banner parallax-img">
         <div class="news-left">
-           <img src="assets/images/newsletter-latte.png" alt="Latte Art" class="spin-slow">
+           <img src="assets/images/newsletter-latte.png" alt="Latte Art" class="spin-slow" loading="lazy" decoding="async">
         </div>
         <div class="news-center">
           <h2>The first pour is on us</h2>
@@ -592,7 +593,7 @@
           </form>
         </div>
         <div class="news-right">
-           <img src="assets/images/discover-coffee-bag.png" alt="Coffee Beans">
+           <img src="assets/images/discover-coffee-bag.png" alt="Coffee Beans" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -675,12 +676,12 @@
   </footer>
 
   <!-- GSAP & Lenis JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/intro.js"></script>
-  <script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="js/intro.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

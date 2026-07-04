@@ -1,10 +1,14 @@
 import pytest
+import re
 from playwright.sync_api import expect
 
 def test_nav_scroll(page):
     page.set_viewport_size({"width": 1440, "height": 900})
-    page.goto('http://localhost:8000')
-    page.locator('#lcSkip').click()
+    page.goto('http://localhost:8000', wait_until='networkidle')
+    try:
+        page.locator('#lcSkip').click(timeout=2000)
+    except Exception:
+        pass
     page.locator('#liceria-intro').wait_for(state="hidden")
     
     # Wait for initial load and Lenis setup
@@ -35,14 +39,17 @@ def test_nav_scroll(page):
 
 def test_nav_links_active_state(page):
     page.set_viewport_size({"width": 1440, "height": 900})
-    page.goto('http://localhost:8000')
-    page.locator('#lcSkip').click()
+    page.goto('http://localhost:8000', wait_until='networkidle')
+    try:
+        page.locator('#lcSkip').click(timeout=2000)
+    except Exception:
+        pass
     page.locator('#liceria-intro').wait_for(state="hidden")
     page.wait_for_timeout(2000)
     
     # Home link should be active initially
     home_link = page.locator('#navLinks a[href="#home"]')
-    expect(home_link).to_have_class(r'.*\bactive\b.*')
+    expect(home_link).to_have_class(re.compile(r'.*\bactive\b.*'))
     
     # Click shop link
     shop_link = page.locator('#navLinks a[href="#shop"]')
@@ -50,13 +57,16 @@ def test_nav_links_active_state(page):
     page.wait_for_timeout(2500)
     
     # Verify active class shifted to shop link
-    expect(shop_link).to_have_class(r'.*\bactive\b.*')
-    expect(home_link).not_to_have_class(r'.*\bactive\b.*')
+    expect(shop_link).to_have_class(re.compile(r'.*\bactive\b.*'))
+    expect(home_link).not_to_have_class(re.compile(r'.*\bactive\b.*'))
 
 def test_theme_shifts(page):
     page.set_viewport_size({"width": 1440, "height": 900})
     page.goto('http://localhost:8000')
-    page.locator('#lcSkip').click()
+    try:
+        page.locator('#lcSkip').click(timeout=2000)
+    except Exception:
+        pass
     page.locator('#liceria-intro').wait_for(state="hidden")
     page.wait_for_timeout(2000)
     
@@ -65,24 +75,24 @@ def test_theme_shifts(page):
     # 1. Scroll to #home
     page.locator('#home').scroll_into_view_if_needed()
     page.wait_for_timeout(1500)
-    expect(body).to_have_class(r'.*\btheme-espresso\b.*')
+    expect(body).to_have_class(re.compile(r'.*\btheme-espresso\b.*'))
     
     # 2. Scroll to #shop
     page.locator('#shop').scroll_into_view_if_needed()
     page.wait_for_timeout(1500)
-    expect(body).to_have_class(r'.*\btheme-crema\b.*')
+    expect(body).to_have_class(re.compile(r'.*\btheme-crema\b.*'))
     
     # 3. Scroll to #about
     page.locator('#about').scroll_into_view_if_needed()
     page.wait_for_timeout(1500)
-    expect(body).to_have_class(r'.*\btheme-moss\b.*')
+    expect(body).to_have_class(re.compile(r'.*\btheme-moss\b.*'))
     
     # 4. Scroll to #ritual
     page.locator('#ritual').scroll_into_view_if_needed()
     page.wait_for_timeout(1500)
-    expect(body).to_have_class(r'.*\btheme-crema\b.*')
+    expect(body).to_have_class(re.compile(r'.*\btheme-crema\b.*'))
     
     # 5. Scroll to #blog
     page.locator('#blog').scroll_into_view_if_needed()
     page.wait_for_timeout(1500)
-    expect(body).to_have_class(r'.*\btheme-espresso\b.*')
+    expect(body).to_have_class(re.compile(r'.*\btheme-espresso\b.*'))
