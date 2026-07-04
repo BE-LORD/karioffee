@@ -106,22 +106,22 @@ magneticEls.forEach((el) => {
 
 // --- 5. Parallax on Mouse Move (Hero) ---
 const parallaxElements = document.querySelectorAll('.parallax-mouse');
+const quickTos = Array.from(parallaxElements).map(el => ({
+  x: gsap.quickTo(el, 'x', { duration: 0.8, ease: 'power2.out' }),
+  y: gsap.quickTo(el, 'y', { duration: 0.8, ease: 'power2.out' }),
+  speed: parseFloat(el.getAttribute('data-speed'))
+}));
+
 document.addEventListener('mousemove', (e) => {
   if (window.innerWidth > 992) {
     const x = (e.clientX - window.innerWidth / 2) / 100;
     const y = (e.clientY - window.innerHeight / 2) / 100;
-
-    parallaxElements.forEach(el => {
-      const speed = el.getAttribute('data-speed');
-      gsap.to(el, {
-        x: x * speed,
-        y: y * speed,
-        duration: 1,
-        ease: 'power2.out'
-      });
+    quickTos.forEach(qt => {
+      qt.x(x * qt.speed);
+      qt.y(y * qt.speed);
     });
   }
-});
+}, { passive: true });
 
 
 // --- 6. ScrollTrigger Animations ---
@@ -204,7 +204,7 @@ if (featuresList) {
 
 // Hero cup: scroll-linked cinematic drift — works on touch too, where mouse parallax can't
 if (!prefersReducedMotion) {
-  gsap.to('.main-cup', {
+  gsap.to('.main-cup-wrapper', {
     yPercent: 12,
     rotation: 6,
     scale: 0.94,
@@ -248,52 +248,13 @@ if (!prefersReducedMotion) gsap.utils.toArray('.parallax-img img').forEach(img =
 const navbar = document.getElementById('navbar');
 const navLinksArr = document.querySelectorAll('#navLinks a');
 
-function scrollSpy() {
-  const sections = ['#home', '#shop', '#about', '#ritual', '#contact'];
-  let activeSectionId = '#home';
-  
-  let minDiff = Infinity;
-  sections.forEach(id => {
-    const el = document.querySelector(id);
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.4) {
-        const diff = Math.abs(rect.top);
-        if (diff < minDiff) {
-          minDiff = diff;
-          activeSectionId = id;
-        }
-      }
-    }
-  });
-
-  // Special case: if scrolled to the very bottom of the page, activate #contact
-  if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 100) {
-    activeSectionId = '#contact';
-  }
-
-  navLinksArr.forEach(link => {
-    if (link.getAttribute('href') === activeSectionId) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
-
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
     navbar.classList.add('scrolled');
   } else {
     navbar.classList.remove('scrolled');
   }
-  scrollSpy();
-});
-lenis.on('scroll', scrollSpy);
-
-// Run once initially (Lenis drives native scroll, so the window
-// 'scroll' listener above already covers Lenis-driven movement)
-window.addEventListener('DOMContentLoaded', scrollSpy);
+}, { passive: true });
 
 // --- MOBILE MENU TOGGLER & CLICK ACTIVE LINK SWITCH ---
 const mobileBtn = document.querySelector('.nav-mobile-btn');
@@ -640,11 +601,12 @@ function initScrollThemes() {
   // The intro exits by brightening to cream, so the hero opens in crema
   // for a seamless handoff; darkness returns in the Origin chapter.
   const sections = [
-    { id: '#home', theme: 'theme-espresso' },
+    { id: '#home', theme: 'theme-crema' },
     { id: '#shop', theme: 'theme-crema' },
     { id: '#about', theme: 'theme-moss' },
     { id: '#ritual', theme: 'theme-crema' },
-    { id: '#blog', theme: 'theme-espresso' }
+    { id: '#blog', theme: 'theme-espresso' },
+    { id: '#contact', theme: 'theme-espresso' }
   ];
 
   sections.forEach(sec => {
@@ -657,6 +619,19 @@ function initScrollThemes() {
         onToggle: self => {
           if (self.isActive) {
             setTheme(sec.theme);
+            
+            // Set active navbar link based on scrolled section
+            navLinksArr.forEach(link => {
+              let targetId = sec.id;
+              if (sec.id === '#blog') {
+                targetId = '#contact'; // Map newsletter section to contact link
+              }
+              if (link.getAttribute('href') === targetId) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
           }
         }
       });
@@ -873,13 +848,12 @@ function startSite() {
   playHeroAnimation();
   initCounters();
 
-  // Initialize Liceria Cinematic Upgrades
+  // Initialize Karioffee Cinematic Upgrades
   initBg3d();
   initScrollThemes();
   initBrewStepper();
   initTestimonialsDeck();
   initSmoothScrollAnchors();
-  scrollSpy();
 }
 if (window.__liceriaIntroDone || !document.getElementById('liceria-intro')) {
   startSite();
@@ -911,6 +885,11 @@ if (marqueeContent) {
   let direction = -1;
   let speed = 1;
   
+  let cachedScrollWidth = marqueeContent.scrollWidth;
+  window.addEventListener('resize', () => {
+    cachedScrollWidth = marqueeContent.scrollWidth;
+  }, { passive: true });
+  
   // Increase speed based on scroll velocity
   lenis.on('scroll', (e) => {
     direction = e.velocity > 0 ? -1 : 1;
@@ -920,8 +899,9 @@ if (marqueeContent) {
   gsap.ticker.add((time, deltaTime) => {
     // px-per-second, scaled by real frame delta — same speed on 60Hz and 120Hz
     xPos += 120 * speed * direction * (deltaTime / 1000);
-    if (xPos <= -marqueeContent.scrollWidth / 2) xPos = 0;
-    if (xPos >= 0 && direction === 1) xPos = -marqueeContent.scrollWidth / 2;
+    const halfWidth = -cachedScrollWidth / 2;
+    if (xPos <= halfWidth) xPos = 0;
+    if (xPos >= 0 && direction === 1) xPos = halfWidth;
     gsap.set(marqueeContent, { x: xPos });
 
     speed += (1 - speed) * 0.05;

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   LICERIA COFFEE — "FROM THE ROAST" CINEMATIC INTRO
+   KARIOFFEE — "FROM THE ROAST" CINEMATIC INTRO
    Act I   ROASTING  — a galaxy of beans ignites in the dark
    Act II  GRINDING/BREWING — the galaxy collapses into a vortex
            above a glowing cup rim

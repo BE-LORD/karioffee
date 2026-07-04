@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   LICERIA COFFEE — "FROM THE ROAST" CINEMATIC INTRO
+   KARIOFFEE — "FROM THE ROAST" CINEMATIC INTRO
    Filmic letterbox frame over a Three.js roastery scene.
    Palette: espresso void / roast ember / crema / gold.
    ═══════════════════════════════════════════════════════════ */
@@ -176,14 +176,21 @@ body.lc-lock { overflow: hidden; }
   line-height: 1;
   color: var(--lc-milk);
   transform: translateY(-6%);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.lc-digits { display: inline-flex; }
+.lc-digits {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
 .lc-col {
   display: inline-block;
   height: 1em;
   overflow: hidden;
   width: 0.58em;
   text-align: center;
+  flex-shrink: 0;
 }
 .lc-col-h {
   width: 0;
